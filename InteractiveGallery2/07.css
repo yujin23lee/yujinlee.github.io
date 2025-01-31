@@ -1,0 +1,110 @@
+*{
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+   font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+   color: white;
+}
+body{
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   min-height: 100vh;
+   background-color: black;
+}
+div.container{
+   position: relative;
+}
+div.clock{
+   width: 550px;
+   height: 550px;
+   border-radius: 50%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+div.clock span{
+   position: absolute;
+   transform: rotate(calc(30deg * var(--i)));
+   inset: 12px;
+   text-align: center;
+   pointer-events: none; 
+}
+div.clock span b{
+   transform: rotate(calc(-30deg * var(--i)));
+   display: inline-block;
+   font-size: 50px;
+   cursor: pointer; 
+   pointer-events: all; 
+}
+div.clock::before{
+   content: '';
+   position: absolute;
+   width: 8px;
+   height: 8px;
+   border-radius: 50%;
+   background-color: white;
+}
+div.hand{
+   position: absolute;
+   display: flex;
+   justify-content: center;
+   align-items: flex-end;
+}
+div.hand i{
+   position: absolute;
+   background-color: var(--c1r);
+   width: 2px;
+   height: 150px;
+   border-radius: 8px;
+} 
+.num.dropping {
+   animation: drop 3s ease forwards;
+}
+@keyframes drop {
+   0% {
+      transform: translateY(0);
+      opacity: 1;
+   }
+   100% {
+      transform: translateY(300px);
+      opacity: 0;
+   }
+}
+.home{
+   width: 40px;
+   right: 5%;
+   position: absolute;
+   justify-content: center;
+}
+#splash-screen {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   z-index: 9999; 
+   opacity: 0;
+   animation: fade-in 1s forwards, fade-out 2s 2s forwards;
+}
+#splash-screen img {
+   width: 300px;
+}
+@keyframes fade-in {
+   0% {
+      opacity: 0;
+   } 100% {
+      opacity: 1;
+   }
+}
+@keyframes fade-out {
+   0% {
+      opacity: 1;
+   } 100% {
+      opacity: 0;
+      visibility: hidden;
+   }
+}
