@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4KM Drawing</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: white;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #distance {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            font-size: 18px;
+            font-family: Arial, sans-serif;
+            border: 1px solid black;
+        }
+        #resetButton {
+            position: fixed;
+            top: 50px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="distance">Distance: 0m</div>
+    <canvas id="drawingCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById("drawingCanvas");
+        const ctx = canvas.getContext("2d");
+        const distanceDisplay = document.getElementById("distance");
+        const resetButton = document.getElementById("resetButton");
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        resizeCanvas();
+
+        let drawing = false;
+        let lastX = null;
+        let lastY = null;
+        let totalDistance = 0;
+        const maxDistance = 4000; // 4km
+
+        function getDistance(x1, y1, x2, y2) {
+            return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+        }
+
+        function startDrawing(e) {
+            if (totalDistance >= maxDistance) return;
+            drawing = true;
+            lastX = e.clientX;
+            lastY = e.clientY;
+        }
+
+        function draw(e) {
+            if (!drawing || totalDistance >= maxDistance) return;
+            const x = e.clientX;
+            const y = e.clientY;
+
+            if (lastX !== null && lastY !== null) {
+                const distance = getDistance(lastX, lastY, x, y);
+                totalDistance += distance;
+
+                if (totalDistance >= maxDistance) {
+                    totalDistance = maxDistance;
+                    distanceDisplay.textContent = `Distance: ${totalDistance.toFixed(2)}m (Limit reached)`;
+                    drawing = false;
+                    return;
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(x, y);
+                ctx.strokeStyle = "black";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+            lastX = x;
+            lastY = y;
+            distanceDisplay.textContent = `Distance: ${totalDistance.toFixed(2)}m`;
+        }
+
+        function stopDrawing() {
+            drawing = false;
+        }
+
+        canvas.addEventListener("mousedown", startDrawing);
+        canvas.addEventListener("mousemove", draw);
+        canvas.addEventListener("mouseup", stopDrawing);
+        canvas.addEventListener("mouseleave", stopDrawing);
+        window.addEventListener("resize", resizeCanvas);
+    </script>
+</body>
+</html>
